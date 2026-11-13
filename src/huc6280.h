@@ -180,7 +180,7 @@ public:
     void SetTraceLogger(TraceLogger* trace_logger);
     void SetProfiler(Profiler* profiler);
     void SaveState(std::ostream& stream);
-    void LoadState(std::istream& stream);
+    void LoadState(std::istream& stream, int version = GG_SAVESTATE_VERSION);
 
 private:
     typedef void (HuC6280::*opcode_member_ptr) (void);
@@ -208,6 +208,7 @@ private:
     u16 m_transfer_length;
     u16 m_transfer_source;
     u16 m_transfer_dest;
+    u8 m_transfer_opcode;
     Memory* m_memory;
     HuC6202* m_huc6202;
     Random* m_random;
@@ -364,7 +365,7 @@ private:
     void OPCodes_TIA();
     void OPCodes_TII();
     void OPCodes_TIN();
-    void OPCodes_TransferStart();
+    void OPCodes_TransferStart(u8 opcode);
     void OPCodes_TransferEnd();
 
     void InitOPCodeTable();

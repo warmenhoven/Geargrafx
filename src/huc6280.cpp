@@ -247,6 +247,7 @@ void HuC6280::Reset()
     m_transfer_length = 0;
     m_transfer_source = 0;
     m_transfer_dest = 0;
+    m_transfer_opcode = 0;
     m_timer_cycles = 0;
     m_timer_enabled = false;
     m_timer_counter = 0;
@@ -974,11 +975,12 @@ void HuC6280::SaveState(std::ostream& stream)
     stream.write(reinterpret_cast<const char*> (&m_interrupt_request_register), sizeof(m_interrupt_request_register));
     stream.write(reinterpret_cast<const char*> (&m_transfer_flag), sizeof(m_transfer_flag));
     stream.write(reinterpret_cast<const char*> (&m_debug_next_irq), sizeof(m_debug_next_irq));
+    stream.write(reinterpret_cast<const char*> (&m_transfer_opcode), sizeof(m_transfer_opcode));
 
     m_overclock_fraction = 0;
 }
 
-void HuC6280::LoadState(std::istream& stream)
+void HuC6280::LoadState(std::istream& stream, int version)
 {
     m_PC.LoadState(stream);
     m_A.LoadState(stream);
@@ -1004,6 +1006,15 @@ void HuC6280::LoadState(std::istream& stream)
     stream.read(reinterpret_cast<char*> (&m_interrupt_request_register), sizeof(m_interrupt_request_register));
     stream.read(reinterpret_cast<char*> (&m_transfer_flag), sizeof(m_transfer_flag));
     stream.read(reinterpret_cast<char*> (&m_debug_next_irq), sizeof(m_debug_next_irq));
+
+    if (version >= 45)
+        stream.read(reinterpret_cast<char*> (&m_transfer_opcode), sizeof(m_transfer_opcode));
+    else
+    {
+        m_transfer_opcode = 0;
+        if (m_transfer_state != 0)
+            m_memory->TryPeek(m_PC.GetValue(), &m_transfer_opcode);
+    }
 
     m_overclock_fraction = 0;
     ResetVBlankWatch();

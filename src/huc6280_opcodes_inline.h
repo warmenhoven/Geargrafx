@@ -518,7 +518,7 @@ INLINE void HuC6280::OPCodes_TAI()
 {
     if (m_transfer_state == 0)
     {
-        OPCodes_TransferStart();
+        OPCodes_TransferStart(0xF3);
         return;
     }
 
@@ -534,7 +534,6 @@ INLINE void HuC6280::OPCodes_TAI()
         if (m_transfer_length == 0)
             m_transfer_state = 1;
 
-        m_PC.Decrement();
         return;
     }
 
@@ -549,7 +548,7 @@ INLINE void HuC6280::OPCodes_TDD()
 {
     if (m_transfer_state == 0)
     {
-        OPCodes_TransferStart();
+        OPCodes_TransferStart(0xC3);
         return;
     }
 
@@ -564,7 +563,6 @@ INLINE void HuC6280::OPCodes_TDD()
         if (m_transfer_length == 0)
             m_transfer_state = 1;
 
-        m_PC.Decrement();
         return;
     }
 
@@ -579,7 +577,7 @@ INLINE void HuC6280::OPCodes_TIA()
 {
     if (m_transfer_state == 0)
     {
-        OPCodes_TransferStart();
+        OPCodes_TransferStart(0xE3);
         return;
     }
 
@@ -595,7 +593,6 @@ INLINE void HuC6280::OPCodes_TIA()
         if (m_transfer_length == 0)
             m_transfer_state = 1;
 
-        m_PC.Decrement();
         return;
     }
 
@@ -610,7 +607,7 @@ INLINE void HuC6280::OPCodes_TII()
 {
     if (m_transfer_state == 0)
     {
-        OPCodes_TransferStart();
+        OPCodes_TransferStart(0x73);
         return;
     }
 
@@ -625,7 +622,6 @@ INLINE void HuC6280::OPCodes_TII()
         if (m_transfer_length == 0)
             m_transfer_state = 1;
 
-        m_PC.Decrement();
         return;
     }
 
@@ -640,7 +636,7 @@ INLINE void HuC6280::OPCodes_TIN()
 {
     if (m_transfer_state == 0)
     {
-        OPCodes_TransferStart();
+        OPCodes_TransferStart(0xD3);
         return;
     }
 
@@ -654,7 +650,6 @@ INLINE void HuC6280::OPCodes_TIN()
         if (m_transfer_length == 0)
             m_transfer_state = 1;
 
-        m_PC.Decrement();
         return;
     }
 
@@ -665,9 +660,10 @@ INLINE void HuC6280::OPCodes_TIN()
     }
 }
 
-INLINE void HuC6280::OPCodes_TransferStart()
+INLINE void HuC6280::OPCodes_TransferStart(u8 opcode)
 {
     m_transfer_state = 2;
+    m_transfer_opcode = opcode;
 
     StackPush8(m_Y.GetValue());
     StackPush8(m_A.GetValue());
@@ -688,7 +684,7 @@ INLINE void HuC6280::OPCodes_TransferEnd()
     m_X.SetValue(StackPop8());
     m_A.SetValue(StackPop8());
     m_Y.SetValue(StackPop8());
-    m_PC.SetValue(m_PC.GetValue() + 6);
+    m_PC.SetValue(m_PC.GetValue() + 7);
     m_cycles += 3;
 }
 

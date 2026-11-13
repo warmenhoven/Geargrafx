@@ -73,7 +73,13 @@ INLINE u32 HuC6280::RunInstruction(bool* instruction_completed)
 
     TraceCpuEvent();
 
-    u8 opcode = Fetch8();
+    u8 opcode;
+
+    if (likely(m_transfer_state == 0))
+        opcode = Fetch8();
+    else
+        opcode = m_transfer_opcode;
+
     m_cycles += k_huc6280_opcode_cycles[opcode];
 
     CheckIRQs();

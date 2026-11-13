@@ -1243,7 +1243,7 @@ bool GeargrafxCore::LoadState(std::istream& stream)
     m_huc6260->LoadState(stream, header.version);
     m_huc6270_1->LoadState(stream, header.version);
     m_huc6270_2->LoadState(stream, header.version);
-    m_huc6280->LoadState(stream);
+    m_huc6280->LoadState(stream, header.version);
     m_audio->LoadState(stream, header.version);
 
     // Some v23 states lack the MB128 flag, try without it first so MB128 RAM is never loaded from misaligned data
